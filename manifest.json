@@ -1,0 +1,11 @@
+{
+  "name": "weathercock-detector",
+  "version": "0.1",
+  "manifest_version": 3,
+  "description": "weathercock-detector",
+  "content_scripts": [{
+    "matches": ["https://*.google.com/*"],
+    "run_at": "document_end",
+    "js": ["content.js"]
+  }]
+  }
