@@ -1,3 +1,4 @@
+//dataURLでないfaviconを取得してbase64で返す
 chrome.runtime.onMessage.addListener(({ url }, sender, sendResponse) => {
   fetch(url)
     .then((r) => r.arrayBuffer())

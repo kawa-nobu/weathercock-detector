@@ -1,18 +1,15 @@
 (async () => {
   //詐欺サイトが使用するコメリfaviconのSHA-256ハッシュ
   const HASH_RULES = {
-    "c2080ff1963e45caf6907e61d48c80e64e9c66eae89828279c7dacc083391cb0":
+    c2080ff1963e45caf6907e61d48c80e64e9c66eae89828279c7dacc083391cb0:
       "komeri-favicon",
+    e72c52e5d1366d96b335496f005631cfff5efe6080d82e55c2ffc7ec0c93fd76:
+      "komeri-favicon-small",
   };
 
   //コメリ公式ドメインの除外パターン
   const EXCLUSION_URLS =
     /www\.komeri\.com|toyu\.komeri\.com|www\.komeri\.bit\.or\.jp/;
-
-  //検索結果の各faviconを取得
-  const TARGET_ELEM = document.querySelectorAll(
-    "#center_col a[jsname][data-ved] img[data-csiid]",
-  );
 
   //ハッシュ作成関数
   async function createHash(dataUrl) {
@@ -39,29 +36,68 @@
     return null;
   }
 
+  //dataURLでないfaviconを取得してくる関数
+  async function getRemoteHash(url) {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage({ url }, async (base64) => {
+        if (!base64) return resolve(null);
+        resolve(await createHash(`data:image/png;base64,${base64}`));
+      });
+    });
+  }
+
+  async function processAll() {
+    //検索結果の各faviconを取得
+    const TARGET_ELEM = [
+      ...document.querySelectorAll(
+        '#search img[src^="data:image"]:not([processed]), #search img[src^="https://"]:not([processed])',
+      ),
+    ].filter((img) => img.naturalWidth <= 32);
+
+    //各検索結果を検証する
+    await Promise.all(
+      [...TARGET_ELEM].map(async (elem) => {
+        //対応済みのフラグを付与する
+        elem.setAttribute("processed", "");
+        //検索結果からURLを抽出する
+        const target_link = elem.closest(
+          'a[jsname][data-ved], a[target="_blank"]',
+        );
+        if (!target_link) return;
+
+        const target_host = new URL(target_link.href).host;
+
+        //公式ドメインはスキップする
+        if (EXCLUSION_URLS.test(target_host)) return;
+
+        //公式以外のドメインでfaviconが一致しているかどうか検証する
+        const detect_result = elem.src.startsWith("https://")
+          ? (HASH_RULES[await getRemoteHash(elem.src)] ?? null)
+          : await detect(elem.src);
+        if (!detect_result) return;
+
+        //faviconが一致した場合は検索結果から非表示にする
+        const target_elem = target_link.closest(
+          "div[jscontroller][data-hveid][data-ved]",
+        );
+        if (target_elem) {
+          target_elem.style = "display:none;";
+        }
+      }),
+    );
+  }
+
   //各検索結果を検証する
-  await Promise.all(
-    [...TARGET_ELEM].map(async (elem) => {
-      //検索結果からURLを抽出する
-      const target_link = elem.closest("a[jsname][data-ved]");
-      if (!target_link) return;
+  const observer = new MutationObserver(async (mutations) => {
+    //変更されたものがあるかチェックする
+    if (!mutations.some((m) => m.addedNodes.length > 0)) return;
+    await processAll();
+  });
 
-      const target_host = new URL(target_link.href).host;
+  observer.observe(document.getElementById("search") ?? document.body, {
+    childList: true,
+    subtree: true,
+  });
 
-      //公式ドメインはスキップする
-      if (EXCLUSION_URLS.test(target_host)) return;
-
-      //公式以外のドメインでfaviconが一致しているかどうか検証する
-      const detect_result = await detect(elem.src);
-      if (!detect_result) return;
-
-      //faviconが一致した場合は検索結果から非表示にする
-      const target_elem = target_link.closest(
-        "div[jscontroller][data-hveid][data-ved]",
-      );
-      if (target_elem) {
-        target_elem.style = "display:none;";
-      }
-    }),
-  );
+  await processAll();
 })();
