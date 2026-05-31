@@ -67,22 +67,31 @@
 
         const target_host = new URL(target_link.href).host;
 
+        const target_elem = target_link.closest(
+          "div[jscontroller][data-hveid][data-ved]",
+        );
+
+        if (!target_elem) return;
+
         //公式ドメインはスキップする
-        if (EXCLUSION_URLS.test(target_host)) return;
+        if (EXCLUSION_URLS.test(target_host)) {
+          target_elem.setAttribute("verified", "");
+          return;
+        }
 
         //公式以外のドメインでfaviconが一致しているかどうか検証する
         const detect_result = elem.src.startsWith("https://")
           ? (HASH_RULES[await getRemoteHash(elem.src)] ?? null)
           : await detect(elem.src);
-        if (!detect_result) return;
+
+        //検証して問題なければ戻す
+        if (!detect_result) {
+          target_elem.setAttribute("verified", "");
+          return;
+        }
 
         //faviconが一致した場合は検索結果から非表示にする
-        const target_elem = target_link.closest(
-          "div[jscontroller][data-hveid][data-ved]",
-        );
-        if (target_elem) {
-          target_elem.style = "display:none;";
-        }
+        target_elem.style = "display:none;";
       }),
     );
   }

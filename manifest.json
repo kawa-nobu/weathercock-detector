@@ -5,9 +5,16 @@
   "description": "weathercock-detector",
   "host_permissions": ["https://*.gstatic.com/*"],
   "background": { "service_worker": "background.js" },
-  "content_scripts": [{
-    "matches": ["https://*.google.com/*"],
-    "run_at": "document_end",
-    "js": ["content.js"]
-  }]
-  }
+  "content_scripts": [
+    {
+      "matches": ["*://www.google.com/*", "*://www.google.co.jp/*"],
+      "css": ["hide.css"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://www.google.com/*", "*://www.google.co.jp/*"],
+      "run_at": "document_end",
+      "js": ["content.js"]
+    }
+  ]
+}
