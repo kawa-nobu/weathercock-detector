@@ -3,6 +3,8 @@
   "version": "0.1",
   "manifest_version": 3,
   "description": "weathercock-detector",
+  "host_permissions": ["https://*.gstatic.com/*"],
+  "background": { "service_worker": "background.js" },
   "content_scripts": [{
     "matches": ["https://*.google.com/*"],
     "run_at": "document_end",
