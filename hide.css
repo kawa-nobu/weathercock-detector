@@ -1,4 +1,4 @@
-#search div[jscontroller][data-hveid][data-ved]:not([verified]):has(cite),
+#search div[jscontroller][data-hveid][data-ved]:not([verified]):not([id^="kp-wp-tab-cont-"]):has(cite),
 #search div[data-attrid="images universal"]:not([verified]) {
-  opacity: 0;
+  display: none;
 }
