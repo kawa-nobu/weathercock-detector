@@ -6,6 +6,22 @@
   "icons": {
     "256": "icon.png"
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "weathercock-detector@kwdev",
+      "strict_min_version": "130.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    },
+    "gecko_android": {
+      "id": "weathercock-detector@kwdev",
+      "strict_min_version": "130.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
   "permissions": ["https://*.gstatic.com/*"],
   "background": {
     "scripts": ["background.js"],
