@@ -2,7 +2,10 @@
   "name": "weathercock-detector",
   "version": "0.1",
   "manifest_version": 3,
-  "description": "weathercock-detector",
+  "description": "Google検索結果に表示されている詐欺サイトほ非表示する",
+  "icons" : {
+    "256" : "icon.png"
+  },
   "host_permissions": ["https://*.gstatic.com/*"],
   "background": { "service_worker": "background.js" },
   "content_scripts": [
