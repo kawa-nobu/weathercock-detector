@@ -4,6 +4,16 @@ Google検索から例の「コメリ」アイコンの詐欺サイトを画面�
 faviconのハッシュで検出するだけなので、faviconに細工されたら精度的に弱くなりそう...
 
 ## インストール手順
+### 各種WebStore経由インストール
+#### Chromium系 (Chrome/Edge/Brave)
+以下リンクからChrome WebStoreにアクセスし、「追加ボタン」をクリックして導入する
+- https://chromewebstore.google.com/detail/weathercock-detector/pcaaojfdfnokaadmbikniabfppidbdgb
+
+#### Firefox系
+以下リンクから　addons.mozilla.org　にアクセスし、「Firefox へ追加」をクリックして導入する
+- https://addons.mozilla.org/ja/firefox/addon/weathercock-detector/
+
+### 開発者向け インストール
 1. このリポジトリをダウンロードまたは clone する
 2. Chrome で `chrome://extensions/` を開く
 3. 右上の「デベロッパーモード」をオンにする
