@@ -5,11 +5,23 @@
       "komeri-favicon",
     e72c52e5d1366d96b335496f005631cfff5efe6080d82e55c2ffc7ec0c93fd76:
       "komeri-favicon-small",
+    a633dc291107032eaa5ddb02e2b970f2513997cf37a164334251d5601ceaf8a3:
+      "ajinomoto-favicon",
+    c9955a1a04c5a2a725a46a92e442647b177beed5e2a61f3b6859a9d7a849e57d:
+      "rakuma-favicon-small",
+    "380538c0ebfabe6586c0314d754f1541eedebc247f56a6577d01a38259e5d357":
+      "rakuma-favicon",
+    "3cf589e14b7ccac2b844e572b5fbcb43b4ae1ffc4ecc4872de7136e818a2ca28":
+      "rakuten-blue-favicon",
+    a0a95953233a2d2c0c8003f66af1ee1f892518babed6212fdab6a0811acecdbc:
+      "askul-favicon",
+    a843a3a3d1563154dc0fb9a19a07cf4804bc76649eba9196d794c825db4ea4c2:
+      "askul-favicon-large",
   };
 
   //コメリ公式ドメインの除外パターン
   const EXCLUSION_URLS =
-    /www\.komeri\.com|toyu\.komeri\.com|www\.komeri\.bit\.or\.jp/;
+    /www\.komeri\.com|toyu\.komeri\.com|www\.komeri\.bit\.or\.jp|fril\.jp|rakuten\.co\.jp|www\.askul\.co\.jp|solution\.soloel\.com|ajinomoto\.co\.jp|www\.ajioligos\.com|rakuten\.com|rakuten-card\.co\.jp|rakuten-bank\.co\.jp|rakuten-sec\.co\.jp|rakuten-life\.co\.jp/;
 
   //ハッシュ作成関数
   async function createHash(dataUrl) {
