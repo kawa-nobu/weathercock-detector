@@ -6,12 +6,16 @@
 
   //詐欺サイトが使用するコメリfaviconのSHA-256ハッシュ
   const HASH_RULES = {
+    "5449de972eaaa6162d46af7f52bc108f4cf615096506be5700c2d3927df0b6a8":
+      "komeri-favicon-webp",
     c2080ff1963e45caf6907e61d48c80e64e9c66eae89828279c7dacc083391cb0:
       "komeri-favicon",
     e72c52e5d1366d96b335496f005631cfff5efe6080d82e55c2ffc7ec0c93fd76:
       "komeri-favicon-small",
     "620baaaace20ce5085c0a359236f22a5876804a3222ae89555e6c910e989af98":
       "komeri-favicon-24px",
+    "c1abffd74c10cff7fbe38ac6c2d347284130ded43d6c77171376d34028cf129b":
+      "yamada-denki-webp",
     a633dc291107032eaa5ddb02e2b970f2513997cf37a164334251d5601ceaf8a3:
       "ajinomoto-favicon",
     c9955a1a04c5a2a725a46a92e442647b177beed5e2a61f3b6859a9d7a849e57d:
