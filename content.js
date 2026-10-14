@@ -32,7 +32,7 @@
 
   //コメリ公式ドメインの除外パターン
   const EXCLUSION_URLS =
-    /www\.komeri\.com|toyu\.komeri\.com|www\.komeri\.bit\.or\.jp|fril\.jp|rakuten\.co\.jp|www\.askul\.co\.jp|solution\.soloel\.com|ajinomoto\.co\.jp|www\.ajioligos\.com|rakuten\.com|rakuten-card\.co\.jp|rakuten-bank\.co\.jp|rakuten-sec\.co\.jp|rakuten-life\.co\.jp/;
+    /www\.komeri\.com|toyu\.komeri\.com|www\.komeri\.bit\.or\.jp|fril\.jp|rakuten\.co\.jp|www\.askul\.co\.jp|solution\.soloel\.com|ajinomoto\.co\.jp|www\.ajioligos\.com|rakuten\.com|rakuten-card\.co\.jp|rakuten-bank\.co\.jp|rakuten-sec\.co\.jp|rakuten-life\.co\.jp|yamada-denki\.jp|yamada-denkiweb\.com|yamada-holdings\.jp|ymall\.jp/;
 
   //ハッシュ作成関数
   async function createHash(dataUrl) {
