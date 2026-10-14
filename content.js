@@ -16,6 +16,8 @@
       "komeri-favicon-24px",
     "898fbad18d68bb8dc7f4e7ab85832b901e98626d1a52c9fcc9ee3c6c0a6db441":
       "komeri-favicon-32px",
+    "30df6c8d4616b22d0dfab7f8ce81a7dcd644add23e2877cc00319163bbe4366f":
+    "yamada-denki-png",
     "c1abffd74c10cff7fbe38ac6c2d347284130ded43d6c77171376d34028cf129b":
       "yamada-denki-webp",
     a633dc291107032eaa5ddb02e2b970f2513997cf37a164334251d5601ceaf8a3:
