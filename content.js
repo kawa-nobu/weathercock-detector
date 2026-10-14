@@ -1,10 +1,17 @@
 (async () => {
+  //非表示用のスタイルを追加
+  const sheet = document.createElement("style");
+  sheet.textContent = "[data-scam-hidden]{display:none !important}";
+  document.documentElement.appendChild(sheet);
+
   //詐欺サイトが使用するコメリfaviconのSHA-256ハッシュ
   const HASH_RULES = {
     c2080ff1963e45caf6907e61d48c80e64e9c66eae89828279c7dacc083391cb0:
       "komeri-favicon",
     e72c52e5d1366d96b335496f005631cfff5efe6080d82e55c2ffc7ec0c93fd76:
       "komeri-favicon-small",
+    "620baaaace20ce5085c0a359236f22a5876804a3222ae89555e6c910e989af98":
+      "komeri-favicon-24px",
     a633dc291107032eaa5ddb02e2b970f2513997cf37a164334251d5601ceaf8a3:
       "ajinomoto-favicon",
     c9955a1a04c5a2a725a46a92e442647b177beed5e2a61f3b6859a9d7a849e57d:
@@ -62,28 +69,35 @@
     //検索結果の各faviconを取得
     const TARGET_ELEM = [
       ...document.querySelectorAll(
-        '#search img[src^="data:image"]:not([processed]), #search img[src^="https://"]:not([processed])',
+        'img[src^="data:image"]:not([processed]), img[src^="https://"]:not([processed])',
       ),
     ].filter((img) => img.naturalWidth <= 32);
 
     //各検索結果を検証する
     await Promise.all(
-      [...TARGET_ELEM].map(async (elem) => {
+      TARGET_ELEM.map(async (elem) => {
         //対応済みのフラグを付与する
         elem.setAttribute("processed", "");
-        //検索結果からURLを抽出する
-        const target_link = elem.closest(
-          'a[jsname][data-ved], a[target="_blank"]',
-        );
-        if (!target_link) return;
 
-        const target_host = new URL(target_link.href).host;
-
-        const target_elem = target_link.closest(
+        const target_elem = elem.closest(
           "div[jscontroller][data-hveid][data-ved]",
         );
-
         if (!target_elem) return;
+
+        //複数の結果を含むブロックを掴んだ場合は消さない
+        if (target_elem.querySelectorAll("h3").length > 1) return;
+
+        //検索結果からホストを抽出する
+        const target_host = new URL(
+          elem.closest("[data-lpage]")?.dataset.lpage ??
+            elem.closest("a[href]")?.href ??
+            location.href,
+        ).host;
+
+        if (target_host === location.host) {
+          //target_elem.setAttribute("verified", "");
+          //return;
+        }
 
         //公式ドメインはスキップする
         if (EXCLUSION_URLS.test(target_host)) {
@@ -103,7 +117,7 @@
         }
 
         //faviconが一致した場合は検索結果から非表示にする
-        target_elem.style = "display:none;";
+        target_elem.setAttribute("data-scam-hidden", "");
       }),
     );
   }
@@ -115,7 +129,7 @@
     await processAll();
   });
 
-  observer.observe(document.getElementById("search") ?? document.body, {
+  observer.observe(document.getElementById("main") ?? document.body, {
     childList: true,
     subtree: true,
   });

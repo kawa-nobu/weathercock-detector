@@ -12,7 +12,7 @@
     {
       "matches": ["*://www.google.com/*", "*://www.google.co.jp/*"],
       "css": ["hide.css"],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     },
     {
       "matches": ["*://www.google.com/*", "*://www.google.co.jp/*"],
