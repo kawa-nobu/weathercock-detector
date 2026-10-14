@@ -83,9 +83,7 @@
         //対応済みのフラグを付与する
         elem.setAttribute("processed", "");
 
-        const target_elem = elem.closest(
-          "div[jscontroller][data-hveid][data-ved]",
-        );
+        const target_elem = elem.closest("div[data-hveid]");
         if (!target_elem) return;
 
         //複数の結果を含むブロックを掴んだ場合は消さない
