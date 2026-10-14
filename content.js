@@ -69,18 +69,28 @@
     });
   }
 
+  //検証済みのsrcを記録する
+  const processedSrc = new WeakMap();
+
   async function processAll() {
     //検索結果の各faviconを取得
     const TARGET_ELEM = [
       ...document.querySelectorAll(
-        'img[src^="data:image"]:not([processed]), img[src^="https://"]:not([processed])',
+        'img[src^="data:image"], img[src^="https://"]',
       ),
-    ].filter((img) => img.naturalWidth <= 32);
+    ].filter(
+      (img) =>
+        img.naturalWidth <= 32 &&
+        processedSrc.get(img) !== img.src &&
+        //ショッピングタブなどの遅延読み込み用プレースホルダーは差し替え後に検証する
+        !(img.hasAttribute("data-deferred") && img.src.startsWith("data:image/gif")),
+    );
 
     //各検索結果を検証する
     await Promise.all(
       TARGET_ELEM.map(async (elem) => {
         //対応済みのフラグを付与する
+        processedSrc.set(elem, elem.src);
         elem.setAttribute("processed", "");
 
         const target_elem = elem.closest("div[data-hveid]");
@@ -126,14 +136,21 @@
 
   //各検索結果を検証する
   const observer = new MutationObserver(async (mutations) => {
-    //変更されたものがあるかチェックする
-    if (!mutations.some((m) => m.addedNodes.length > 0)) return;
+    //変更されたものがあるかチェックする(遅延読み込みによるsrcの差し替えも含める)
+    if (
+      !mutations.some(
+        (m) => m.addedNodes.length > 0 || m.type === "attributes",
+      )
+    )
+      return;
     await processAll();
   });
 
   observer.observe(document.getElementById("main") ?? document.body, {
     childList: true,
     subtree: true,
+    attributes: true,
+    attributeFilter: ["src"],
   });
 
   await processAll();
