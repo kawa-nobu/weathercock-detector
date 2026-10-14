@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: '作成するタグ名 (例: v1.0.0)'
+        required: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # checkout v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Build extension packages
+        run: bash package.sh
+
+      - name: Build userscript
+        run: bash build_userscript.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # upload-artifact v7.0.0
+        with:
+          name: package
+          path: |
+            package/*.zip
+            package/*.user.js
+          if-no-files-found: error
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # checkout v6.0.2
+        with:
+          fetch-depth: 0 # 一旦、履歴をすべて取得する
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # download-artifact v8.0.1
+        with:
+          path: release-assets
+
+      - name: Show downloaded files
+        run: find release-assets -type f | sort
+
+      - name: Fetch Latest Merged PR Information
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # 最新のマージ済みPRのタイトルと本文を取得して書き出す
+          # 最新の1件を取得
+          gh pr list --state merged --base main --limit 1 --json title,body --template \
+          '{{ range . }}# {{ .title }}{{ "\n\n" }}{{ .body }}{{ end }}' > release_notes.md
+
+      - name: Collect release assets
+        shell: bash
+        run: |
+          mapfile -t assets < <(
+            find release-assets -type f \( -name '*.zip' -o -name '*.user.js' \) | sort
+          )
+
+          if [ "${#assets[@]}" -eq 0 ]; then
+            echo "No release assets found"
+            exit 1
+          fi
+
+          printf '%s\n' "${assets[@]}" > asset_list.txt
+          printf '%s\n' "${assets[@]}"
+
+      - name: Create tag
+        env:
+          TAG_NAME: ${{ github.event.inputs.tag_name }}
+        run: |
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ github.event.inputs.tag_name }}
+        shell: bash
+        run: |
+          mapfile -t assets < asset_list.txt
+
+          gh release create "$TAG_NAME" \
+            --verify-tag \
+            --title "Release $TAG_NAME" \
+            --notes-file release_notes.md \
+            --draft \
+            "${assets[@]}"

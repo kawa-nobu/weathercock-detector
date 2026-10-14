@@ -1,6 +1,6 @@
 {
   "name": "weathercock-detector",
-  "version": "0.1",
+  "version": "0.2",
   "manifest_version": 3,
   "description": "Google検索結果に表示されている詐欺サイトを非表示する",
   "icons" : {
@@ -12,7 +12,7 @@
     {
       "matches": ["*://www.google.com/*", "*://www.google.co.jp/*"],
       "css": ["hide.css"],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     },
     {
       "matches": ["*://www.google.com/*", "*://www.google.co.jp/*"],
